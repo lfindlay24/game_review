@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Review</title>
+    <script type="text/javascript">
+
+        function getEntries() {
+            console.log("into getEntries");
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    var entries = JSON.parse(this.responseText);
+                    renderEntries(entries);
+                }
+            }
+            xmlHttp.open("GET", "http://localhost:8081/review", true);
+            xmlHttp.send();
+        }
+
+        //display messages in bullet points in <ul>
+        function renderEntries(entries) {
+            console.log("in renderEntries()");
+            var diary_list = document.getElementById("diary_list");
+            diary_list.innerHTML = "";
+            for (var entry of entries) {
+                var entry_html = "<li>" + entry.id + " " + entry.text + "</li>";
+                diary_list.innerHTML = diary_list.innerHTML + entry_html;
+            }
+            entry_id.value = "";
+            entry_text.value = "";
+        }
+
+        window.onload = function() {
+            console.log("page loading");
+            getEntries();
+        }
+
+        function createReview() {
+            console.log("into createEntry");
+            const title = document.getElementById("game_title").value;
+            const reviewText = document.getElementById("review_text").value;
+            const reviewInt = document.getElementById("review_int").value;
+            let review = {
+                "GameTitle": title,
+                "ReviewText": reviewText,
+                "ReviewINt": reviewInt
+            }
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("POST", 'http://localhost:8081/review');
+            xmlHttp.setRequestHeader("Content-Type", "application/json");
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    //adding message is done, show results
+                    getEntries();
+                }
+            }
+            xmlHttp.send(JSON.stringify(review));
+        }
+
+    </script>
+</head>
+<body>
+<div>
+    <ul id="review-list"></ul>
+</div>
+<div>
+    <label>Game Title</label>
+    <input type="text" id="game_title" />
+    <br/>
+    <label>Review Text</label>
+    <textarea rows="8" cols="20" id="review_text"></textarea>
+    <label>How Many Stars?</label>
+    <input type="number" id="review_int" />
+    <button onclick="createReview();">Add your review</button>
+
+
+</div>
+
+</body>
+</html>
