@@ -13,11 +13,6 @@ public class RestReviewController {
 
     private final BusinessLayer bs = new BusinessLayer();
 
-    @RequestMapping(path = "/hello", method = RequestMethod.GET)
-    public String hello() {
-            return "Welcome to my Diary Application";
-        }
-
     @RequestMapping(path = "", method = RequestMethod.POST)
     public void createMessage(@RequestBody Map<String, Object> review) {
         try {
